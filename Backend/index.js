@@ -2,6 +2,7 @@ import express from "express"
 import cors from "cors"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
+import auth_route from "./routes/auth_route.js"
 
 // LOAD ENV FIRST
 dotenv.config();
@@ -29,3 +30,5 @@ App.use(express.json())
 App.listen(3000,()=>{
     console.log("server run on port 3000");
 })
+
+App.use("/api/auth",auth_route)
