@@ -3,6 +3,7 @@ import cors from "cors"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
 import auth_route from "./routes/auth_route.js"
+import cookieParser from "cookie-parser"
 
 // LOAD ENV FIRST
 dotenv.config();
@@ -26,6 +27,8 @@ App.use(cors({
 
 // middleware to parse json data
 App.use(express.json())
+
+App.use(cookieParser()) // for parsing cookies
 
 App.listen(3000,()=>{
     console.log("server run on port 3000");
