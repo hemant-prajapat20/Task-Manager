@@ -32,3 +32,15 @@ App.listen(3000,()=>{
 })
 
 App.use("/api/auth",auth_route)
+
+App.use((err,req,res,next)=>{
+
+    const statusCode = err.statusCode || 500
+    const message = err.message || "Internal Server Error"
+    res.status(res.statusCode).json
+    ({
+     success:false, 
+     statusCode,
+     message
+    })
+})

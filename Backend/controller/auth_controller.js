@@ -1,19 +1,20 @@
 import User from '../models/user_model.js';   
 import bcryptjs from 'bcryptjs';  
+import { errorHandler } from '../utils/error.js';
 
 
 
-export const Signup = async (req, res) => {
+export const signup = async (req, res,next) => {
     const { name, email, password, profileImageUrl, adminJoinCode} = req.body;
   
     if (!name || !email || !password || name==="" || email=="" || password=="") {
-        return res.status(400).json({ success: false, message: "All fields are required" });
+        return next(errorHandler(400,"All fields are required"));
     }
 
     // check if user already exists
     const isAlreadyExist= await User.findOne({email});
     if(isAlreadyExist){
-        return res.status(400).json({success:false, message:"User already exists"});
+        return next(errorHandler(400,"User with this email already exists"));
     }
 
     // check if admin join code is correct & default role is user
@@ -21,7 +22,7 @@ export const Signup = async (req, res) => {
         if(adminJoinCode === process.env.ADMIN_JOIN_CODE){
             role = "admin";
         }else{
-            return res.status(400).json({success:false, message:"Invalid admin join code"});
+            return next(errorHandler(400,"Invalid admin join code"));
         }
     
 
@@ -40,7 +41,7 @@ export const Signup = async (req, res) => {
         res.json("User registered successfully");
      }
      catch(error){
-        res.status(500).json({success:false, message:"Failed to register user", error:error.message});
+        next(errorHandler(500,"Failed to register user"));
      }  
 
     }
