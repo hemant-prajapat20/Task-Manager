@@ -68,7 +68,7 @@ export const signin = async (req, res,next) =>{
 
   //create JWT token
   const token = jwt.sign(
-    {Id: validUser._id},process.env.JWT_SECRET)
+    {Id: validUser._id,role: validUser.role },process.env.JWT_SECRET)
 
    const {password:pass, ...rest}=validUser._doc
    res.status(200).cookie("access_token", token,{ httpOnly:true}).json(rest)
@@ -110,6 +110,19 @@ export const updateUserProfile = async (req,res,next)=>{
         const updatedUser = await user.save();
         const {password:pass, ...rest}=user._doc
         res.status(200).json(rest)
+    }catch(error){
+        next(error)
+    }
+}
+
+export const uploadImage = async (req,res,next)=>{
+    try{
+        if(!req.file){
+            return next(errorHandler(400,"No file Uploaded"))
+        }
+        const imageUrl=`${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`
+     console.log(req.file);
+         res.status(200).json({imageUrl})
     }catch(error){
         next(error)
     }

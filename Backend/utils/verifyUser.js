@@ -15,12 +15,29 @@ export const verifyToken = (req,res,next)=>{
   }
   req.user = user;
   next();
-})
-}
+});
+};
 
-export const adminOnly = (req,res,next)=>{
-    if(req.user.role && req.user === "admin"){
-        next();
-}else{
-    return next(errorHandler(403,"Access Denied: Admins only"));
-}}
+export const adminOnly = (req, res, next) =>{
+  const token = req.cookies.access_token
+
+  if(!token){
+    return next(errorHandler(401, "Unauthorized"))
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) =>{
+    if(err){
+      return next(errorHandler(401, "Unauthorized"))
+    }
+
+    req.user = user
+    console.log(req.user)
+
+    if(req.user && req.user.role === "admin"){
+      next()
+    } 
+    else{
+      return next(errorHandler(403, "Access Denied, admin only!"))
+    }
+  })
+}
