@@ -2,14 +2,14 @@ import express from "express"
 import cors from "cors"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
-import auth_route from "./routes/auth_route.js"
-import user_route from "./routes/user_route.js"
 import cookieParser from "cookie-parser"
 import path from "path"
-import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import auth_route from "./routes/auth_route.js"
+import user_route from "./routes/user_route.js"
+import task_route from "./routes/task_route.js"
+
+
 
 // LOAD ENV FIRST
 dotenv.config();
@@ -21,7 +21,9 @@ mongoose.connect(process.env.MONGO_URI)
     console.log("DB Error:", err);
 })
 
+
 const App = express();
+
 
 // middleware to handle cors
 App.use(cors({
@@ -42,8 +44,8 @@ App.listen(3000,()=>{
 
 App.use("/api/auth",auth_route)
 App.use("/api/users",user_route)
+App.use("/api/tasks",task_route)
 
-App.use("/uploads", express.static(path.join(__dirname, "uploads")))
 
 
 App.use((err,req,res,next)=>{
