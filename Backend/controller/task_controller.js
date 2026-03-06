@@ -168,3 +168,37 @@ try{
     next(error);
   }
 }
+
+export const updateTaskChecklist = async(req,res,next)=>{
+    try{
+        const task = await Task.findById(req.params.id) 
+        if(!task){
+            return next(errorHandler(404,"Task not found"));    
+        }
+         if(!task.assignedTo.includes(req.user.Id) && req.user.role !== "admin"){
+            return next(errorHandler(403,"You are not authorized to update the checklist of this task"));
+         }
+         task.todoChecklist=todoChecklist;
+
+          const completedCount = task.todoChecklist.filter(item=>item.completed).length;
+           const totalItems = task.todoChecklist.length;
+           task.progress = totalItems === 0 ? Math.round((completedCount/totalItems)*100) : 0;
+         
+
+           if(task.progress === 100){
+           task.status = "Completed";
+           }    
+           else if(task.progress > 0){
+            task.status = "In Progress";
+           } else{
+            task.status = "Pending";
+           }
+
+           await task.save();
+           const updatedTask = await Task.findById(req.params.id).populate("assignedTo","name email profileImageUrl")
+           res.status(200).json({message:"Task checklist updated successfully!", task:updatedTask})
+        }
+
+    catch(error){
+      next(error);
+    }}
