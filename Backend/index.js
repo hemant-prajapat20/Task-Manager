@@ -8,7 +8,7 @@ import path from "path"
 import auth_route from "./routes/auth_route.js"
 import user_route from "./routes/user_route.js"
 import task_route from "./routes/task_route.js"
-
+import report_route from "./routes/report_route.js"
 
 
 // LOAD ENV FIRST
@@ -45,6 +45,7 @@ App.listen(3000,()=>{
 App.use("/api/auth",auth_route)
 App.use("/api/users",user_route)
 App.use("/api/tasks",task_route)
+App.use("/api/reports",report_route)
 
 
 
