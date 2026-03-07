@@ -1,10 +1,10 @@
 import express from "express"
 import { adminOnly, verifyToken } from "../utils/verifyUser.js";
-import { exportTasksReport, exportUsersReport } from "../controller/report_controller.js";
+import { exportTaskReport, exportUsersReport } from "../controller/report_controller.js";
 
 const router = express.Router();
 
-router.get("/export/tasks",verifyToken,adminOnly,exportTasksReport) 
+router.get("/export/tasks",verifyToken,adminOnly,exportTaskReport) 
 
 router.get("/export/users", verifyToken, adminOnly, exportUsersReport)
 
