@@ -15,28 +15,28 @@ const App = () => {
   return (
     <div>
     
-        <Routes>
-          <Route path='/login' element={<Login/>}/>
-          <Route path='/Signup' element={<SignUp/>}/>
+     <Routes>
+      <Route path='/login' element={<Login/>}/>
+       <Route path='/Signup' element={<SignUp/>}/>
 
 
-        {/* Admin Routes */}
-          <Route element={<PrivateRoute allowedRoles={["admin"]}/>}>
-            <Route path='/admin/dashboard' element={<Dashboard/>} />
-            <Route path='/admin/tasks' element={<ManageTask/>} />
-            <Route path='/admin/users' element={<ManageUsers/>} />
-            <Route path='/admin/create-task' element={<CreateTask/>} />
-          </Route>
+      {/* Admin Routes */}
+      <Route element={<PrivateRoute allowedRoles={["admin"]}/>}>
+        <Route path='/admin/dashboard' element={<Dashboard/>} />
+          <Route path='/admin/tasks' element={<ManageTask/>} />
+          <Route path='/admin/users' element={<ManageUsers/>} />
+          <Route path='/admin/create-task' element={<CreateTask/>} />
+       </Route>
 
-        {/* User Routes */}
-        <Route element={<PrivateRoute allowedRoles={["user"]}/>}>
-          <Route path='/user/dashboard' element={<UserDashboard/>}/>
-          <Route path='/user/task' element={<MyTask/>}/>
-          <Route path='/user/task-details/:id' element={<TaskDetails/>}/>
+      {/* User Routes */}
+      <Route element={<PrivateRoute allowedRoles={["user"]}/>}>
+        <Route path='/user/dashboard' element={<UserDashboard/>}/>
+        <Route path='/user/task' element={<MyTask/>}/>
+        <Route path='/user/task-details/:id' element={<TaskDetails/>}/>
  
-        </Route>
+      </Route>
      
-        </Routes>
+    </Routes>
 
     </div>
   )
