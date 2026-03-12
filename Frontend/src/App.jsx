@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route ,Navigate } from 'react-router-dom'
 import SignUp from './Pages/auth/SignUp'
 import Login from './Pages/auth/Login'
 import Dashboard from './Pages/Admin/Dashboard'
@@ -10,14 +10,21 @@ import PrivateRoute from './routes/PrivateRoute'
 import UserDashboard from './Pages/user/UserDashboard'
 import TaskDetails from './Pages/user/TaskDetails'
 import MyTask from './Pages/user/MyTask'
+import { useSelector } from 'react-redux'
 
-const App = () => {
+
+
+const App = () =>{
   return (
     <div>
     
      <Routes>
+      {/* default route */}
+      <Route path="/" element={<Root />}/>
+
+
       <Route path='/login' element={<Login/>}/>
-       <Route path='/Signup' element={<SignUp/>}/>
+      <Route path='/Signup' element={<SignUp/>}/>
 
 
       {/* Admin Routes */}
@@ -33,9 +40,8 @@ const App = () => {
         <Route path='/user/dashboard' element={<UserDashboard/>}/>
         <Route path='/user/task' element={<MyTask/>}/>
         <Route path='/user/task-details/:id' element={<TaskDetails/>}/>
- 
       </Route>
-     
+      
     </Routes>
 
     </div>
@@ -43,3 +49,17 @@ const App = () => {
 }
 
 export default App
+
+const Root=()=>{
+   const {currentUser}=useSelector((state)=> state.user)
+   if(!currentUser){
+    return <Navigate to={"/login"}/>
+   }
+
+   return currentUser.role ==="admin" ?(
+    <Navigate to={"/admin/dashboard"}/>
+   ):(
+        <Navigate to={"/user/dashboard"}/>
+
+   )
+}
