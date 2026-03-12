@@ -4,7 +4,7 @@ import { FaEyeSlash, FaPeopleGroup } from "react-icons/fa6"
 import { FaEye } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
 import { validateEmail } from "../../utils/helper"
-import axiosInstance from "../../utils/axioInstance"
+// import axiosInstance from "../../utils/axioInstance"
 import { useDispatch, useSelector } from "react-redux"
 import {signInFailure,signInStart,signInSuccess} from "../../redux/slice/userSlice"
 

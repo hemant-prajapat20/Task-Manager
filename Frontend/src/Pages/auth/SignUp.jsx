@@ -6,7 +6,7 @@ import { FaEye } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
 import { validateEmail } from "../../utils/helper"
 import ProfilePhotoSelector from "../../components/ProfilePhotoSelector"
-import axiosInstance from "../../utils/axioInstance"
+// import axiosInstance from "../../utils/axioInstance"
 import uploadImage from "../../utils/uploadImage"
 
 const SignUp = () => {
