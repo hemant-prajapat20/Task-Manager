@@ -21,8 +21,8 @@ const Login = ()=>{
 
   const handleSubmit = async (e)=>{
     e.preventDefault()
-    
-   if (!validateEmail(email)){
+
+   if(!validateEmail(email)){
    setError("Please enter a valid email address")
    return
    }
@@ -45,10 +45,10 @@ const Login = ()=>{
         withCredentials: true,
        }
       )
-
+ 
       // console.log(response.data)
 
-      if (response.data.role === "admin"){
+      if(response.data.role === "admin"){
         dispatch(signInSuccess(response.data))
         navigate("/admin/dashboard")
       } else {
@@ -56,7 +56,7 @@ const Login = ()=>{
         navigate("/user/dashboard")
       }
     } catch (error){
-      if (error.response && error.response.data.message){
+      if(error.response && error.response.data.message){
         setError(error.response.data.message)
         dispatch(signInFailure(error.response.data.message))
       } else{
