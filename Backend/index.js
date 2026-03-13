@@ -4,19 +4,19 @@ import dotenv from "dotenv"
 import mongoose from "mongoose"
 import cookieParser from "cookie-parser"
 import path from "path"
+import { fileURLToPath } from "url"
 
 import auth_route from "./routes/auth_route.js"
 import user_route from "./routes/user_route.js"
 import task_route from "./routes/task_route.js"
 import report_route from "./routes/report_route.js"
-import { fileURLToPath } from "url"
 
 
 // LOAD ENV FIRST
 dotenv.config();
 
 const __filename=fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__dirname)
+const __dirname = path.dirname(__filename)
 
 mongoose.connect(process.env.MONGO_URI)
 .then(()=>{
