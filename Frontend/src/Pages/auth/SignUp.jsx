@@ -11,7 +11,6 @@ import axiosInstance from "../../utils/axiosinstance"
 
 const SignUp = () => {
   const navigate = useNavigate()
-
   const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -25,17 +24,14 @@ const SignUp = () => {
     e.preventDefault()
 
     let profileImageUrl = ""
-
     if(!fullName){
       setError("Please enter the name")
       return
     }
-
     if(!validateEmail(email)){
       setError("Please enter a valid email address")
       return
     }
-
     if(!password){
       setError("Please enter the password")
       return
