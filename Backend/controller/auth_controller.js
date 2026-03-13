@@ -50,7 +50,7 @@ export const signup = async (req, res,next) => {
 
   // for sign in
 export const signin = async (req, res,next) =>{ 
-    try {
+    try{
         const { email, password } = req.body;
         if (!email || !password || email=="" || password=="") {
          return next(errorHandler(400,"All fields are required"));
@@ -134,7 +134,7 @@ export const signout = async (req, res, next) => {
     res
       .clearCookie("access_token")
       .status(200)
-      .json("User has been loggedout successfully!")
+      .json("User has been logged out successfully!")
   } catch (error) {
     next(error)
   }
