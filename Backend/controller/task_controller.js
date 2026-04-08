@@ -158,12 +158,14 @@ try{
     if(!isAssigned && req.user.role !== "admin"){
         return next(errorHandler(403,"You are not authorized to update the status of this task"));
     }
-    const {status} = req.body.status|| task.status;
-     if(task.status === "Completed")
-        { task.todoChecklist.forEach(item=>item.completed=true);
-        }
-        await task.save();
-        res.status(200).json({message:"Task status updated successfully!", task})
+    const status = req.body.status || task.status;
+    task.status = status;
+     if(task.status === "Completed") { 
+        task.todoChecklist.forEach(item=>item.completed=true);
+        task.progress = 100;
+     }
+     await task.save();
+     res.status(200).json({message:"Task status updated successfully!", task})
 }catch(error){
     next(error);
   }
@@ -178,15 +180,16 @@ export const updateTaskChecklist = async(req,res,next)=>{
          if(!task.assignedTo.includes(req.user.Id) && req.user.role !== "admin"){
             return next(errorHandler(403,"You are not authorized to update the checklist of this task"));
          }
-         task.todoChecklist=todoChecklist;
+         const { todoChecklist } = req.body;
+         task.todoChecklist = todoChecklist || task.todoChecklist;
 
           const completedCount = task.todoChecklist.filter(item=>item.completed).length;
            const totalItems = task.todoChecklist.length;
-           task.progress = totalItems === 0 ? Math.round((completedCount/totalItems)*100) : 0;
+           task.progress = totalItems > 0 ? Math.round((completedCount/totalItems)*100) : 0;
          
 
            if(task.progress === 100){
-           task.status = "Completed";
+            task.status = "Completed";
            }    
            else if(task.progress > 0){
             task.status = "In Progress";
@@ -239,13 +242,13 @@ export const updateTaskChecklist = async(req,res,next)=>{
      },
      ])
 
-     const taskPriorityLevel =taskPriorities.reduce((acc, priority)=>{  
-        acc[priority] = taskPriorityLevelRaw.find((find)=>item._id === priority)?.count || 0;
+     const taskPriorityLevel = taskPriorities.reduce((acc, priority)=>{  
+        acc[priority] = taskPriorityLevelRaw.find((item)=>item._id === priority.toLowerCase())?.count || 0;
         return acc
      }, {})
 
      //fetch recent 10 tasks
-     const recentTask=await Task.find().sort({createdAt:-1}).limit(10).select("title status priority dueDate CreatedAt")
+     const recentTasks=await Task.find().sort({createdAt:-1}).limit(10).select("title status priority dueDate createdAt")
 
      res.status(200).json({
        statistics:{
@@ -259,7 +262,7 @@ export const updateTaskChecklist = async(req,res,next)=>{
         taskDistribution,
         taskPriorityLevel,
       }, 
-       recentTask,
+       recentTasks,
      })
   }catch(error){
       next(error);
@@ -317,7 +320,7 @@ export const userDashboardData = async(req,res,next)=>{
          },
      ])
      const taskPriorityLevel = taskPriorities.reduce((acc, priority)=>{
-      acc[priority] = taskPriorityLevelRaw.find(item=>item._id === priority)?.count || 0;
+      acc[priority] = taskPriorityLevelRaw.find(item=>item._id === priority.toLowerCase())?.count || 0;
       return acc;
      },{})
 
@@ -325,7 +328,7 @@ export const userDashboardData = async(req,res,next)=>{
     const recentTask = await Task.find({assignedTo:userObjectId}).sort({createdAt:-1}).limit(10).select("title status priority dueDate createdAt")
 
     res.status(200).json({  
-        statistics:{
+        stats:{
           totalTasks,
           pendingTasks,
           inProgressTasks,
@@ -336,7 +339,7 @@ export const userDashboardData = async(req,res,next)=>{
           taskDistribution,   
           taskPriorityLevel,
         },
-        recentTask,
+        recentTasks: recentTask,
     })
     }catch(error){  
         next(error);

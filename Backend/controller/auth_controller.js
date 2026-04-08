@@ -20,11 +20,13 @@ export const signup = async (req, res,next) => {
 
     // check if admin join code is correct & default role is user
     let role = "user";
+    if(adminJoinCode){
         if(adminJoinCode === process.env.ADMIN_JOIN_CODE){
             role = "admin";
         }else{
             return next(errorHandler(400,"Invalid admin join code"));
         }
+    }
     
 
         const hashedPassword = await bcryptjs.hash(password, 10);

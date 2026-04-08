@@ -11,6 +11,7 @@ import UserDashboard from './Pages/user/UserDashboard'
 import TaskDetails from './Pages/user/TaskDetails'
 import MyTask from './Pages/user/MyTask'
 import { useSelector } from 'react-redux'
+import { Toaster } from 'react-hot-toast'
 
 
 
@@ -24,7 +25,7 @@ const App = () =>{
 
 
       <Route path='/login' element={<Login/>}/>
-      <Route path='/Signup' element={<SignUp/>}/>
+       <Route path='/signup' element={<SignUp/>}/>
 
 
       {/* Admin Routes */}
@@ -38,12 +39,12 @@ const App = () =>{
       {/* User Routes */}
       <Route element={<PrivateRoute allowedRoles={["user"]}/>}>
         <Route path='/user/dashboard' element={<UserDashboard/>}/>
-        <Route path='/user/task' element={<MyTask/>}/>
+        <Route path='/user/tasks' element={<MyTask/>}/>
         <Route path='/user/task-details/:id' element={<TaskDetails/>}/>
       </Route>
       
     </Routes>
-
+    <Toaster position="top-center" />
     </div>
   )
 }
@@ -53,13 +54,14 @@ export default App
 const Root=()=>{
    const {currentUser}=useSelector((state)=> state.user)
    if(!currentUser){
-    return <Navigate to={"/login"}/>
+    return <Navigate to="/login" replace />
    }
 
-   return currentUser.role ==="admin" ?(
-    <Navigate to={"/admin/dashboard"}/>
-   ):(
-        <Navigate to={"/user/dashboard"}/>
-
-   )
+   if (currentUser.role === "admin") {
+     return <Navigate to="/admin/dashboard" replace />
+   } else if (currentUser.role === "user") {
+     return <Navigate to="/user/dashboard" replace />
+   } else {
+     return <Navigate to="/login" replace />
+   }
 }

@@ -31,7 +31,7 @@ const App = express();
 
 // middleware to handle cors
 App.use(cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: process.env.FRONT_END_URL || "http://localhost:5173",
     methods:["GET","POST","PUT","DELETE"],
     allowedHeaders:["Content-Type","Authorization"],
     credentials:true
@@ -58,7 +58,7 @@ App.use((err,req,res,next)=>{
 
     const statusCode = err.statusCode || 500
     const message = err.message || "Internal Server Error"
-    res.status(res.statusCode).json
+    res.status(statusCode).json
     ({
      success:false, 
      statusCode,

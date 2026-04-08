@@ -4,7 +4,7 @@ import Navbar from "./Navbar"
 import SideMenu from "./SideMenu"
 
 const DashboardLayout = ({ children, activeMenu }) =>{
-  const { currentUser } = useSelector((state) => state.user)
+  const { currentUser} = useSelector((state) => state.user)
 
   return (
     <div className="min-h-screen flex flex-col">

@@ -4,7 +4,7 @@ import { FaEyeSlash, FaPeopleGroup } from "react-icons/fa6"
 import { FaEye } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
 import { validateEmail } from "../../utils/helper"
-import axiosInstance from "../../utils/axiosinstance"
+import axiosInstance from "../../utils/axiosInstance"
 import { useDispatch, useSelector } from "react-redux"
 import {signInFailure,signInStart,signInSuccess} from "../../redux/slice/userSlice"
 
@@ -36,7 +36,7 @@ const Login = ()=>{
     // Login API call
    try {
      dispatch(signInStart())
-     const response = await axiosInstance.post("/auth/sign-in",
+     const response = await axiosInstance.post("/auth/signin",
       {
         email,
         password,

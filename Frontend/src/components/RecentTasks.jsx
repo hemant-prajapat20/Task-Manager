@@ -2,7 +2,7 @@ import moment from "moment"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 
-const RecentTasks = ({ tasks }) => {
+const RecentTasks = ({ tasks, seeMorePath = "/admin/tasks" }) => {
   const navigate = useNavigate()
 
   return (
@@ -11,7 +11,7 @@ const RecentTasks = ({ tasks }) => {
         <h3 className="text-lg font-semibold text-gray-800">Recent Tasks</h3>
 
         <button
-          onClick={() => navigate("/admin/tasks")}
+          onClick={() => navigate(seeMorePath)}
           className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors p-2 bg-blue-50 hover:bg-blue-100"
         >
           See More →

@@ -6,8 +6,8 @@ import { FaEye } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
 import { validateEmail } from "../../utils/helper"
 import ProfilePhotoSelector from "../../components/ProfilePhotoSelector"
-import axiosInstance from "../../utils/axiosinstance"
-// import uploadImage from "../../utils/uploadImage"
+import uploadImage from "../../utils/uploadImage"
+import axiosInstance from "../../utils/axiosInstance"
 
 const SignUp = () => {
   const navigate = useNavigate()
@@ -47,7 +47,7 @@ const SignUp = () => {
         profileImageUrl = imageUploadRes.imageUrl || ""
       }
 
-      const response = await axiosInstance.post("/auth/sign-up",{
+      const response = await axiosInstance.post("/auth/signup",{
         name: fullName,
         email,
         password,
@@ -101,7 +101,7 @@ const SignUp = () => {
 
    <div>
      <label
-       htmlFor="email"
+       htmlFor="fullName"
        className="block text-sm font-medium text-gray-700 mb-1" >
        Full Name
      </label>
@@ -169,13 +169,12 @@ const SignUp = () => {
 
    <div className="relative">
      <input
-       id="adminInviteTokem"
+       id="adminInviteToken"
        type={showAdminInviteToken ? "text" : "password"}
        value={adminInviteToken}
        onChange={(e) => setAdminInviteToken(e.target.value)}
        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
        placeholder="•••••••"
-       required
     />
 
      <button

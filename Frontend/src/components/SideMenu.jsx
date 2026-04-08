@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import axiosInstance from "../utils/axioInstance"
+import axiosInstance from "../utils/axiosInstance"
 import { useDispatch, useSelector } from "react-redux"
 import { signOutSuccess } from "../redux/slice/userSlice"
 import { useNavigate } from "react-router-dom"
