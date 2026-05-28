@@ -69,6 +69,17 @@ if (!uploadsDir) {
 /**
  * API Routes
  */
+// Basic root route so visiting http://localhost:3000/ doesn't throw an error
+app.get("/", (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "Welcome to the Task Management System API",
+    });
+});
+
+// Ignore favicon requests from browser
+app.get("/favicon.ico", (req, res) => res.status(204).end());
+
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/tasks", taskRoutes);
@@ -89,6 +100,7 @@ app.use(errorHandler);
  */
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+    console.log(`Server is running in ${process.env.NODE_ENV || 'development'} mode`);
+    console.log(`Localhost Link: http://localhost:${PORT}`);
     console.log(`Static uploads served from: ${uploadsDir}`);
 });
