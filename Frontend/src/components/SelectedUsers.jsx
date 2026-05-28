@@ -43,7 +43,7 @@ const SelectedUsers = ({ selectedUser, setSelectedUser }) => {
   useEffect(() => {
     getAllUsers()
 
-    return () => {}
+    return () => { }
   }, [])
 
   useEffect(() => {
@@ -51,7 +51,7 @@ const SelectedUsers = ({ selectedUser, setSelectedUser }) => {
       setTempSelectedUser([])
     }
 
-    return () => {}
+    return () => { }
   }, [selectedUser])
 
   return (

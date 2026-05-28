@@ -1,42 +1,38 @@
-import React from "react"
+import React from "react";
 
+/**
+ * TaskStatusTabs Component
+ * Navigation pills for filtering tasks by status with dynamic item counts.
+ */
 const TaskStatusTabs = ({ tabs, activeTab, setActiveTab }) => {
   return (
-    <div className="my-2">
-      <div className="flex">
-        {tabs.map((tab) => (
+    <div className="flex bg-slate-100/50 p-1.5 rounded-[1.5rem] border border-slate-200/50 backdrop-blur-sm self-start">
+      {tabs.map((tab) => {
+        const isActive = activeTab === tab.label;
+        
+        return (
           <button
             key={tab.label}
-            className={`relative px-3 md:px-4 py-2 text-sm font-medium ${
-              activeTab === tab.label
-                ? "text-primary"
-                : "text-gray-500 hover:text-gray-700"
-            } cursor-pointer`}
-            onClick={() => setActiveTab(tab.label)}
             type="button"
+            onClick={() => setActiveTab(tab.label)}
+            className={`
+              flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300
+              ${isActive 
+                ? "bg-white text-indigo-600 shadow-md ring-1 ring-slate-200/50 scale-[1.02]" 
+                : "text-slate-400 hover:text-slate-600 hover:bg-slate-200/30"}
+            `}
           >
-            <div className="flex items-center">
-              <span className="text-lg">{tab.label}</span>
-
-              <span
-                className={`text-sm ml-2 px-2 py-0.5 rounded-full ${
-                  activeTab === tab.label
-                    ? "bg-primary text-white"
-                    : "bg-gray-200 text-gray-800"
-                }`}
-              >
-                ({tab.count})
-              </span>
-            </div>
-
-            {activeTab === tab.label && (
-              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary"></div>
-            )}
+            <span>{tab.label}</span>
+            <span className={`px-2 py-0.5 rounded-lg text-[10px] font-black transition-colors ${
+              isActive ? "bg-indigo-600 text-white" : "bg-slate-200 text-slate-500"
+            }`}>
+              {tab.count}
+            </span>
           </button>
-        ))}
-      </div>
+        );
+      })}
     </div>
-  )
-}
+  );
+};
 
-export default TaskStatusTabs
+export default TaskStatusTabs;

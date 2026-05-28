@@ -1,92 +1,207 @@
-import React, { useEffect, useState } from "react"
-import DashboardLayout from "../../components/DashboardLayout"
-import axiosInstance from "../../utils/axiosInstance"
-import TaskCard from "../../components/TaskCard"
-import TaskStatusTabs from "../../components/TaskStatusTabs"
-import toast from "react-hot-toast"
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { MdDeleteOutline, MdAssignment, MdAdd, MdFileDownload } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
+import DashboardLayout from "../../components/DashboardLayout";
+import TaskCard from "../../components/TaskCard";
+import TaskStatusTabs from "../../components/TaskStatusTabs";
+import taskService from "../../services/task.service";
+import reportService from "../../services/report.service";
+
+/**
+ * ManageTask Component (Admin Only)
+ * High-level task management allowing admins to filter, view, and delete tasks.
+ * Includes data export capabilities for reporting.
+ */
 const ManageTask = () => {
-  const [tasks, setTasks] = useState([])
-  const [filterStatus, setFilterStatus] = useState("All")
-  const [tabs, setTabs] = useState([
-    { label: "All", count: 0 },
-    { label: "Pending", count: 0 },
-    { label: "In Progress", count: 0 },
-    { label: "Completed", count: 0 },
-  ])
+    const navigate = useNavigate();
 
-  const getAllTasks = async () => {
-    try {
-      const response = await axiosInstance.get("/tasks", {
-        params: { status: filterStatus === "All" ? "" : filterStatus }
-      })
-      if (response.data) {
-        setTasks(response.data.tasks || [])
-        const summary = response.data.statusSummary || {}
-        setTabs([
-          { label: "All", count: summary.all || 0 },
-          { label: "Pending", count: summary.pendingTasks || 0 },
-          { label: "In Progress", count: summary.inProgressTasks || 0 },
-          { label: "Completed", count: summary.completedTasks || 0 },
-        ])
-      }
-    } catch (error) {
-      console.log("Error fetching tasks:", error)
-      toast.error("Failed to fetch tasks")
+    const [tasks, setTasks] = useState([]);
+    const [filterStatus, setFilterStatus] = useState("All");
+    const [loading, setLoading] = useState(true);
+    const [isExporting, setIsExporting] = useState(false);
+    
+    const [tabs, setTabs] = useState([
+        { label: "All", count: 0 },
+        { label: "Pending", count: 0 },
+        { label: "In Progress", count: 0 },
+        { label: "Completed", count: 0 },
+    ]);
+
+    /**
+     * Fetch tasks based on the current filter status.
+     */
+    const fetchTasks = async () => {
+        try {
+            setLoading(true);
+            const statusParam = filterStatus === "All" ? "" : filterStatus;
+            const response = await taskService.getTasks(statusParam);
+            
+            if (response.success && response.data) {
+                setTasks(response.data);
+                const summary = response.statusSummary || {};
+                
+                setTabs([
+                    { label: "All", count: summary.all || 0 },
+                    { label: "Pending", count: summary.pendingTasks || 0 },
+                    { label: "In Progress", count: summary.inProgressTasks || 0 },
+                    { label: "Completed", count: summary.completedTasks || 0 },
+                ]);
+            }
+        } catch (error) {
+            const message = error.response?.data?.message || "Failed to load tasks";
+            toast.error(message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    /**
+     * Trigger Excel report download for all tasks.
+     */
+    const handleExportTasks = async () => {
+        try {
+            setIsExporting(true);
+            toast.loading("Generating task report...", { id: "export" });
+            await reportService.exportTasks();
+            toast.success("Task report downloaded!", { id: "export" });
+        } catch (error) {
+            toast.error("Export failed", { id: "export" });
+        } finally {
+            setIsExporting(false);
+        }
+    };
+
+    /**
+     * Trigger Excel report download for user task summaries.
+     */
+    const handleExportUsers = async () => {
+        try {
+            setIsExporting(true);
+            toast.loading("Generating user summary report...", { id: "export-u" });
+            await reportService.exportUsers();
+            toast.success("User report downloaded!", { id: "export-u" });
+        } catch (error) {
+            toast.error("Export failed", { id: "export-u" });
+        } finally {
+            setIsExporting(false);
+        }
     }
-  }
 
-  const deleteTask = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this task?")) return
-    try {
-      await axiosInstance.delete(`/tasks/${id}`)
-      toast.success("Task deleted successfully")
-      getAllTasks()
-    } catch (error) {
-      toast.error("Failed to delete task")
-    }
-  }
+    /**
+     * Delete a task after confirmation.
+     */
+    const handleDeleteTask = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this task? This action is permanent.")) {
+            return;
+        }
 
-  useEffect(() => {
-    getAllTasks()
-  }, [filterStatus])
+        try {
+            const response = await taskService.deleteTask(id);
+            if (response.success) {
+                toast.success("Task removed successfully");
+                fetchTasks();
+            }
+        } catch (error) {
+            const message = error.response?.data?.message || "Failed to delete task";
+            toast.error(message);
+        }
+    };
 
-  return (
-    <DashboardLayout activeMenu={"Manage Task"}>
-      <div className="p-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <h2 className="text-2xl font-bold text-gray-800">Manage Tasks</h2>
-          <TaskStatusTabs tabs={tabs} activeTab={filterStatus} setActiveTab={setFilterStatus} />
-        </div>
+    useEffect(() => {
+        fetchTasks();
+    }, [filterStatus]);
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tasks.length > 0 ? (
-            tasks.map(task => (
-              <div key={task._id} className="relative group">
-                <TaskCard 
-                  {...task} 
-                  assignedTo={task.assignedTo?.map(u => u.profileImage)}
-                  onClick={() => {}} 
-                />
-                <button 
-                  onClick={(e) => { e.stopPropagation(); deleteTask(task._id); }}
-                  className="absolute top-2 right-2 p-2 bg-white/90 text-red-500 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              </div>
-            ))
-          ) : (
-            <div className="col-span-full py-20 text-center bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
-              <p className="text-gray-500">No tasks found in this category.</p>
+    return (
+        <DashboardLayout activeMenu={"Manage Task"}>
+            <div className="p-4 md:p-8 space-y-8 animate-fade-in">
+                {/* Header Section */}
+                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+                    <div className="space-y-1">
+                        <h2 className="text-3xl font-black text-slate-900 tracking-tight">Full Inventory</h2>
+                        <p className="text-slate-500 font-medium italic">Oversee and organize all project assignments</p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3">
+                        {/* Status Tabs */}
+                        <TaskStatusTabs 
+                            tabs={tabs} 
+                            activeTab={filterStatus} 
+                            setActiveTab={setFilterStatus} 
+                        />
+
+                        {/* Export Actions */}
+                        <div className="flex items-center gap-2 ml-auto xl:ml-0">
+                            <button 
+                                onClick={handleExportTasks}
+                                disabled={isExporting}
+                                className="flex items-center gap-2 bg-white text-slate-700 px-5 py-3 rounded-2xl font-bold transition-all border border-slate-200 shadow-sm hover:shadow-md hover:bg-slate-50 active:scale-95 disabled:opacity-50"
+                                title="Export Tasks to Excel"
+                            >
+                                <MdFileDownload className="text-xl text-indigo-600" />
+                                <span className="hidden md:inline">Task Report</span>
+                            </button>
+                            <button 
+                                onClick={handleExportUsers}
+                                disabled={isExporting}
+                                className="flex items-center gap-2 bg-white text-slate-700 px-5 py-3 rounded-2xl font-bold transition-all border border-slate-200 shadow-sm hover:shadow-md hover:bg-slate-50 active:scale-95 disabled:opacity-50"
+                                title="Export User Stats to Excel"
+                            >
+                                <MdFileDownload className="text-xl text-emerald-600" />
+                                <span className="hidden md:inline">User Summary</span>
+                            </button>
+                        </div>
+
+                        {/* Create Action */}
+                        <button 
+                            onClick={() => navigate("/admin/create-task")}
+                            className="flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold transition-all shadow-lg hover:shadow-indigo-500/10 active:scale-95"
+                        >
+                            <MdAdd className="text-xl" />
+                            <span>New Task</span>
+                        </button>
+                    </div>
+                </div>
+
+                {/* Tasks Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                    {loading ? (
+                        [...Array(6)].map((_, i) => (
+                            <div key={i} className="h-72 bg-slate-100 rounded-[2rem] animate-pulse"></div>
+                        ))
+                    ) : tasks.length > 0 ? (
+                        tasks.map((task) => (
+                            <div key={task._id} className="relative group">
+                                <TaskCard 
+                                    {...task}
+                                    assignedTo={task.assignedTo}
+                                    onClick={() => navigate(`/user/task-details/${task._id}`)}
+                                />
+                                
+                                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                                     <button 
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDeleteTask(task._id);
+                                        }}
+                                        className="p-3 bg-white/95 backdrop-blur-md text-rose-500 hover:bg-rose-500 hover:text-white rounded-2xl shadow-2xl transition-all border border-slate-100"
+                                        title="Delete Task"
+                                    >
+                                        <MdDeleteOutline className="text-xl" />
+                                    </button>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="col-span-full flex flex-col items-center justify-center py-20 px-6 bg-white/40 rounded-[3rem] border-2 border-dashed border-slate-100 italic font-medium text-slate-400">
+                             No tasks matching your current parameters.
+                        </div>
+                    )}
+                </div>
             </div>
-          )}
-        </div>
-      </div>
-    </DashboardLayout>
-  )
-}
+        </DashboardLayout>
+    );
+};
 
-export default ManageTask
+export default ManageTask;
