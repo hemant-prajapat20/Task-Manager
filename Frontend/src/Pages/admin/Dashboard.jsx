@@ -84,7 +84,7 @@ const Dashboard = () => {
             
             <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                 <div className="space-y-2">
-                    <h2 className="text-3xl md:text-5xl font-black tracking-tight">
+                    <h2 className="text-3xl md:text-5xl font-white tracking-tight">
                         Welcome back, <span className="text-indigo-400">{currentUser?.name?.split(' ')[0]}</span>!
                     </h2>
                     <p className="text-slate-400 text-lg md:text-xl font-medium">

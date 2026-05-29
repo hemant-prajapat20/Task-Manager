@@ -175,7 +175,7 @@ const CreateTask = () => {
                                 Operational Checklist (Optional)
                             </label>
                             
-                            <div className="flex gap-2">
+                            <div className="flex flex-col sm:flex-row gap-2 items-stretch">
                                 <input
                                     type="text"
                                     className="flex-1 px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-inner"
@@ -186,8 +186,9 @@ const CreateTask = () => {
                                 />
                                 <button
                                     type="button"
+                                    aria-label="Add checklist item"
                                     onClick={addChecklistItem}
-                                    className="px-6 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-500 transition-colors shadow-lg active:scale-95"
+                                    className="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-500 transition-colors shadow-lg active:scale-95"
                                 >
                                     <MdAdd className="text-2xl" />
                                 </button>

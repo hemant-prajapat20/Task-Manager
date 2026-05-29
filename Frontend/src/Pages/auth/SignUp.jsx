@@ -7,7 +7,6 @@ import toast from "react-hot-toast";
 
 import AuthLayout from "../../components/AuthLayout";
 import { validateEmail } from "../../utils/helper";
-import ProfilePhotoSelector from "../../components/ProfilePhotoSelector";
 import authService from "../../services/auth.service";
 import { signInStart, signInSuccess, signInFailure } from "../../redux/slice/userSlice";
 
@@ -25,7 +24,7 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
-  const [profilePic, setProfilePic] = useState(null);
+  
   const [adminInviteToken, setAdminInviteToken] = useState("");
   const [showAdminInviteToken, setShowAdminInviteToken] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,15 +55,7 @@ const SignUp = () => {
     try {
       let profileImageUrl = "";
 
-      // 2) Upload profile picture if provided
-      if (profilePic) {
-        const formData = new FormData();
-        formData.append("image", profilePic);
-        const uploadRes = await authService.uploadImage(formData);
-        profileImageUrl = uploadRes.imageUrl || "";
-      }
-
-      // 3) Signup API call
+      // 2) Signup API call
       await authService.signup({
         name: fullName,
         email,
@@ -73,7 +64,7 @@ const SignUp = () => {
         adminJoinCode: adminInviteToken,
       });
 
-      // 4) Auto-login after successful signup
+      // 3) Auto-login after successful signup
       dispatch(signInStart());
       const loginResponse = await authService.signin(email, password);
       const userData = loginResponse.data;
@@ -81,7 +72,7 @@ const SignUp = () => {
 
       toast.success(`Welcome, ${userData.name}! Your account is ready.`);
 
-      // 5) Role-based redirect — admin code → admin panel, otherwise → user panel
+      // 4) Role-based redirect — admin code → admin panel, otherwise → user panel
       if (userData.role === "admin") {
         navigate("/admin/dashboard");
       } else {
@@ -120,11 +111,6 @@ const SignUp = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Profile Photo Selector */}
-              <div className="flex justify-center mb-2">
-                <ProfilePhotoSelector image={profilePic} setImage={setProfilePic} />
-              </div>
-
               {/* Full Name */}
               <div className="space-y-1">
                 <label htmlFor="fullName" className="block text-sm font-semibold text-slate-700 ml-1">

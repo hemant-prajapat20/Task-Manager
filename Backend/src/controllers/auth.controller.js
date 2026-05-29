@@ -127,6 +127,11 @@ export const updateUserProfile = catchAsync(async (req, res, next) => {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
 
+    // Handle profile image update (explicit null means remove)
+    if (req.body.profileImage !== undefined) {
+        user.profileImage = req.body.profileImage || "https://static.vecteezy.com/system/resources/previews/048/926/061/non_2x/bronze-membership-icon-default-avatar-profile-icon-membership-icon-social-media-user-image-illustration-vector.jpg";
+    }
+
     if (req.body.password) {
         user.password = await bcryptjs.hash(req.body.password, 12);
     }   

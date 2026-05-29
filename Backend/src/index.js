@@ -83,7 +83,10 @@ app.get("/favicon.ico", (req, res) => res.status(204).end());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/tasks", taskRoutes);
-app.use("/api/reports", reportRoutes);
+app.get("/api", (req, res) => {
+  res.status(200).json({ success: true, message: "API is running" });
+});
+
 
 /**
  * Error Handling

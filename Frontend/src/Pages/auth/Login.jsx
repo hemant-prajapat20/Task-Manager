@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+// Profile photo selector removed
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaEyeSlash, FaEye, FaTasks } from "react-icons/fa";
@@ -22,8 +23,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
-
-  const { loading } = useSelector((state) => state.user);
+  
+  const { loading, currentUser } = useSelector((state) => state.user);
+  // Profile picture state removed
 
   /**
    * Handle form submission for login.
@@ -90,6 +92,7 @@ const Login = () => {
 
             {/* Login Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
+                
               <div className="space-y-1">
                 <label htmlFor="email" className="block text-sm font-semibold text-slate-700 ml-1">
                   Email Address
