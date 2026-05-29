@@ -59,7 +59,7 @@ const SideMenu = ({ activeMenu, onClose }) => {
   }, [currentUser]);
 
   return (
-    <div className="flex flex-col h-full bg-white lg:bg-transparent p-6">
+    <div className="flex flex-col h-full bg-white lg:bg-transparent p-6 overflow-y-auto custom-scrollbar">
       {/* User Focus Section */}
       <div className="flex flex-col items-center mb-10 pb-10 border-b border-slate-100/50">
         <div className="relative mb-4 group">
@@ -128,10 +128,10 @@ const SideMenu = ({ activeMenu, onClose }) => {
       </nav>
 
       {/* Sidebar Help/Support Mockup */}
-      <div className="mt-auto hidden lg:block">
+      <div className="mt-auto">
         <div className="bg-indigo-50 rounded-3xl p-6 border border-indigo-100">
-            <p className="text-xs font-black text-indigo-900 uppercase tracking-widest mb-1 text-white">Need help?</p>
-            <p className="text-xs text-indigo-600 font-medium mb-3 text-white/50">Check our documentation for advanced workflows.</p>
+            <p className="text-xs font-black text-indigo-900 uppercase tracking-widest mb-1">Need help?</p>
+            <p className="text-xs text-indigo-600 font-medium mb-3">Check our documentation for advanced workflows.</p>
             <button className="text-[10px] font-black text-white bg-indigo-600 py-2 px-4 rounded-xl uppercase tracking-widest hover:bg-indigo-700 transition-colors">
                 View Docs
             </button>

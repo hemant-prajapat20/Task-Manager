@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { FaEyeSlash, FaEye, FaTasks } from "react-icons/fa";
 import { MdEmail, MdLock, MdPerson, MdVpnKey } from "react-icons/md";
 import toast from "react-hot-toast";
@@ -8,13 +9,16 @@ import AuthLayout from "../../components/AuthLayout";
 import { validateEmail } from "../../utils/helper";
 import ProfilePhotoSelector from "../../components/ProfilePhotoSelector";
 import authService from "../../services/auth.service";
+import { signInStart, signInSuccess, signInFailure } from "../../redux/slice/userSlice";
 
 /**
  * SignUp Component
  * Handles new user registration including profile image upload and admin joining.
+ * After successful signup, automatically logs the user in and redirects based on role.
  */
 const SignUp = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -69,11 +73,24 @@ const SignUp = () => {
         adminJoinCode: adminInviteToken,
       });
 
-      toast.success("Account created successfully! Please login.");
-      navigate("/login");
+      // 4) Auto-login after successful signup
+      dispatch(signInStart());
+      const loginResponse = await authService.signin(email, password);
+      const userData = loginResponse.data;
+      dispatch(signInSuccess(userData));
+
+      toast.success(`Welcome, ${userData.name}! Your account is ready.`);
+
+      // 5) Role-based redirect — admin code → admin panel, otherwise → user panel
+      if (userData.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/user/dashboard");
+      }
     } catch (err) {
       const message = err.response?.data?.message || "Registration failed. Please try again.";
       setError(message);
+      dispatch(signInFailure(message));
       toast.error(message);
     } finally {
       setIsSubmitting(false);

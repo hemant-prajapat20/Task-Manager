@@ -26,6 +26,10 @@ router.post('/signin', signin);
 // Route: Logout the current user
 router.post("/sign-out", signout);
 
+// Route: Upload a user profile image (public so it works during signup)
+// "upload.single('image')" middleware parses the uploaded image
+router.post("/upload-image", upload.single("image"), uploadImage);
+
 // ==========================================
 // Protected Routes (Login required)
 // ==========================================
@@ -35,10 +39,6 @@ router.get("/user-profile", verifyToken, userProfile);
 
 // Route: Update user profile details
 router.put("/update-profile", verifyToken, updateUserProfile);
-
-// Route: Upload a user profile image
-// "upload.single('image')" middleware parses the uploaded image
-router.post("/upload-image", verifyToken, upload.single("image"), uploadImage);
 
 // Export the router to use it in index.js
 export default router;

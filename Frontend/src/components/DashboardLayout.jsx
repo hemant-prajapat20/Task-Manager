@@ -24,8 +24,8 @@ const DashboardLayout = ({ children, activeMenu }) => {
           </aside>
 
           {/* Main Application Content */}
-          <main className="flex-1 min-w-0 overflow-x-hidden">
-            <div className="p-4 md:p-6 lg:p-8">
+          <main className="flex-1 min-w-0 overflow-x-hidden flex flex-col">
+            <div className="p-3 md:p-6 lg:p-8 flex-1">
               {children}
             </div>
 

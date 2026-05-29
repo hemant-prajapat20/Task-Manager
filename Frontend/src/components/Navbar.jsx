@@ -86,7 +86,7 @@ const Navbar = ({ activeMenu }) => {
             onClick={() => setOpenSideMenu(false)}
           />
           {/* Drawer */}
-          <div className="relative z-50 w-72 h-full bg-white shadow-2xl animate-slide-in">
+          <div className="relative z-50 w-72 h-full bg-white shadow-2xl animate-slide-in overflow-y-auto">
             <button
               className="absolute top-4 right-4 p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
               onClick={() => setOpenSideMenu(false)}

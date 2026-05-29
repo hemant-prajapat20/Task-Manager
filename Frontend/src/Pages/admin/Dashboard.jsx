@@ -162,8 +162,8 @@ const Dashboard = () => {
             <div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
                 <div className="p-8 border-b border-slate-100 flex items-center justify-between">
                     <div>
-                        <h3 className="text-xl font-bold text-slate-900 tracking-tight text-white">Recent Activities</h3>
-                        <p className="text-sm text-slate-500 font-medium italic text-white/50">Keep track of the latest updates</p>
+                        <h3 className="text-xl font-bold text-slate-900 tracking-tight">Recent Activities</h3>
+                        <p className="text-sm text-slate-500 font-medium italic">Keep track of the latest updates</p>
                     </div>
                 </div>
                 <RecentTasks tasks={dashboardData.recentTasks} />
