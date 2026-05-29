@@ -91,6 +91,7 @@ export const signin = catchAsync(async (req, res, next) => {
         .cookie("access_token", token, { 
             httpOnly: true, // Prevents XSS attacks
             secure: process.env.NODE_ENV === "production", // Secure cookie in production
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
             maxAge: 10 * 24 * 60 * 60 * 1000 // 10 days
         })
         .json({
@@ -169,7 +170,11 @@ export const uploadImage = catchAsync(async (req, res, next) => {
  */
 export const signout = catchAsync(async (req, res, next) => {
     res
-      .clearCookie("access_token")
+      .clearCookie("access_token", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      })
       .status(200)
       .json({
           success: true,
