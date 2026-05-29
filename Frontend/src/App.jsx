@@ -3,15 +3,16 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import SignUp from './Pages/auth/SignUp';
 import Login from './Pages/auth/Login';
-import Dashboard from './Pages/Admin/Dashboard.jsx';
+import Dashboard from './Pages/admin/Dashboard.jsx';
 import ManageTask from './Pages/admin/ManageTask.jsx';
 import ManageUsers from './Pages/admin/ManageUsers.jsx';
-import CreateTask from './Pages/Admin/CreateTask.jsx';
+import CreateTask from './Pages/admin/CreateTask.jsx';
 import UserDashboard from './Pages/user/UserDashboard.jsx';
 import TaskDetails from './Pages/user/TaskDetails.jsx';
 import MyTask from './Pages/user/MyTask.jsx';
 import PrivateRoute from './routes/PrivateRoute.jsx';
 import { Toaster } from 'react-hot-toast';
+
 
 /**
  * Root redirect component – sends user to their role-based dashboard.
